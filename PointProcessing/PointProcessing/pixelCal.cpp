@@ -16,6 +16,7 @@ void main()
 	Mat D(A.rows, A.cols, CV_8UC1);
 	Mat E(A.rows, A.cols, CV_8UC1);
 	
+
 	plus(A,B);
 	sub(A, C);
 	multi(A, D);
