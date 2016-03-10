@@ -11,6 +11,8 @@ void multi(Mat, Mat);
 void div(Mat, Mat);
 void AND(Mat, Mat, Mat);
 void OR(Mat, Mat, Mat);
+void XOR(Mat, Mat);
+void NOT(Mat, Mat);
 void main()
 {
 	Mat A = imread("lenna.bmp", CV_LOAD_IMAGE_GRAYSCALE);
@@ -31,10 +33,16 @@ void main()
 	Mat circle = imread("circle.bmp", CV_LOAD_IMAGE_GRAYSCALE);
 	Mat F(A.rows, A.cols, CV_8UC1);
 	Mat G(A.rows, A.cols, CV_8UC1);
+	Mat H(A.rows, A.cols, CV_8UC1);
+	Mat I(A.rows, A.cols, CV_8UC1);
 	AND(A, circle, F);
 	OR(A, circle, G);
+	XOR(A, H);
+	NOT(A, I);
 	imwrite("AND.bmp", F);
 	imwrite("OR.bmp", G);
+	imwrite("XOR.bmp", H);
+	imwrite("NOT.bmp", I);
 }
 void plus(Mat in,Mat out)
 {
@@ -99,10 +107,33 @@ void OR(Mat in, Mat circle, Mat out)
 			//	out.at<uchar>(i, j) = in.at<uchar>(i, j);
 			//else
 			//	out.at<uchar>(i, j) = 0;
-			if (in.at<uchar>(i, j)==0 && circle.at<uchar>(i, j) == 0)
+			if (in.at<uchar>(i, j) == 0 && circle.at<uchar>(i, j) == 0)
 				out.at<uchar>(i, j) = 0;
 			else
 				out.at<uchar>(i, j) = in.at<uchar>(i, j);
+		}
+	}
+}
+void XOR(Mat in, Mat out)
+{
+	for (int i = 0; i < in.rows; i++)
+	{
+		for (int j = 0; j < in.cols; j++)
+		{
+			if((in.at<uchar>(i,j)^100)==0)
+				out.at<uchar>(i, j) = 0;
+			else
+				out.at<uchar>(i, j) = in.at<uchar>(i,j);
+		}
+	}
+}
+void NOT(Mat in, Mat out)
+{
+	for (int i = 0; i < in.rows; i++)
+	{
+		for (int j = 0; j < in.cols; j++)
+		{
+			out.at<uchar>(i, j) = 255-in.at<uchar>(i, j);
 		}
 	}
 }
