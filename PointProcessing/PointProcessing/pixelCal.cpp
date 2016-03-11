@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -13,6 +14,9 @@ void AND(Mat, Mat, Mat);
 void OR(Mat, Mat, Mat);
 void XOR(Mat, Mat);
 void NOT(Mat, Mat);
+void Gamma(Mat, Mat);
+void Binarization(Mat, Mat);
+void Stress(Mat, Mat);
 void main()
 {
 	Mat A = imread("lenna.bmp", CV_LOAD_IMAGE_GRAYSCALE);
@@ -43,6 +47,17 @@ void main()
 	imwrite("OR.bmp", G);
 	imwrite("XOR.bmp", H);
 	imwrite("NOT.bmp", I);
+
+	Mat J(A.rows, A.cols, CV_8UC1);
+	Mat K(A.rows, A.cols, CV_8UC1);
+	Mat L(A.rows, A.cols, CV_8UC1);
+	Gamma(A, J);
+	Binarization(A, K);
+	Stress(A, L);
+	imwrite("Gamma.bmp", J);
+	imwrite("Binarization.bmp", K);
+	imwrite("stress.bmp", L);
+
 }
 void plus(Mat in,Mat out)
 {
@@ -134,6 +149,43 @@ void NOT(Mat in, Mat out)
 		for (int j = 0; j < in.cols; j++)
 		{
 			out.at<uchar>(i, j) = 255-in.at<uchar>(i, j);
+		}
+	}
+}
+void Gamma(Mat in, Mat out)
+{
+	for (int i = 0; i < in.rows; i++)
+	{
+		for (int j = 0; j < in.cols; j++)
+		{
+			out.at<uchar>(i, j) = pow(in.at<uchar>(i, j),1/1.2);
+			//감마 값이 1보다 크면 어두워지고, 작으면 밝아짐
+		}
+	}
+}
+void Binarization(Mat in, Mat out)
+{
+	for (int i = 0; i < in.rows; i++)
+	{
+		for (int j = 0; j < in.cols; j++)
+		{
+			if (in.at<uchar>(i, j)>128)
+				out.at<uchar>(i, j) = 255;
+			else
+				out.at<uchar>(i, j) = 0;
+		}
+	}
+}
+void Stress(Mat in, Mat out)
+{
+	for (int i = 0; i < in.rows; i++)
+	{
+		for (int j = 0; j < in.cols; j++)
+		{
+			if (in.at<uchar>(i, j) > 100 && in.at<uchar>(i, j) < 150)
+				out.at<uchar>(i, j) = 255;
+			else
+				out.at<uchar>(i, j) = in.at<uchar>(i, j);
 		}
 	}
 }
