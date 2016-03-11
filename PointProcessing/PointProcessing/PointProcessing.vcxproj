@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pixelCal.cpp" />
+    <ClCompile Include="histogram.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6954454C-D91A-4280-A6A8-CEF7D66D66F2}</ProjectGuid>
