@@ -84,16 +84,37 @@ void BubbleSort(int *A, int num)
 	for (int i = 0; i < num - 2; i++)
 		bubbling(A, num - i);
 }
+void CMFCApplication1View::dilation_erosion(int num)
+{
+	int tmp[9];
+	CMFCApplication1Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	for (int y = 0; y < pDoc->height; y++) for (int x = 0; x < pDoc->width; x++)
+	{
+		pDoc->tmpImg[y][x] = pDoc->resultImg[y][x];
+	}
 
+	for (int y = 1; y < (pDoc->height) - 1; y++) for (int x = 1; x < (pDoc->width) - 1; x++)
+	{
+		tmp[0] = pDoc->tmpImg[y - 1][x - 1];
+		tmp[1] = pDoc->tmpImg[y - 1][x];
+		tmp[2] = pDoc->tmpImg[y - 1][x + 1];
+		tmp[3] = pDoc->tmpImg[y][x - 1];
+		tmp[4] = pDoc->tmpImg[y][x];
+		tmp[5] = pDoc->tmpImg[y][x + 1];
+		tmp[6] = pDoc->tmpImg[y + 1][x - 1];
+		tmp[7] = pDoc->tmpImg[y + 1][x];
+		tmp[8] = pDoc->tmpImg[y + 1][x + 1];
+		BubbleSort(tmp, 9);
+		pDoc->resultImg[y][x] = tmp[num];
+	}
+}
 void CMFCApplication1View::OnDraw(CDC* pDC)
 {
 	CMFCApplication1Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if(!pDoc) 
 		return;
-	int num;
-	int tmp[9];
-	
 	if (viewmode == 0)
 	{
 		for (int y = 0; y < pDoc->height; y++) for (int x = 0; x < pDoc->width; x++)
@@ -104,64 +125,27 @@ void CMFCApplication1View::OnDraw(CDC* pDC)
 		{
 			for (int y = 0; y<pDoc->height; y++) for (int x = 0; x<pDoc->width; x++)
 				pDC->SetPixel(x, y, RGB(pDoc->inputImg[y][x], pDoc->inputImg[y][x], pDoc->inputImg[y][x]));
-
 		}
 	}
-
 	else if (viewmode == 1)
 	{
-		for (int y = 0; y < pDoc->height; y++) for (int x = 0; x < pDoc->width; x++)
-		{
-			pDoc->tmpImg[y][x] = pDoc->resultImg[y][x];
-		}
-		if (dilation == 1 && erosion == 0)
-			num = 8;
-		else if (dilation == 0 && erosion == 1)
-			num = 0;
-
 		
-		for (int y = 1; y < (pDoc->height)-1; y++) for (int x = 1; x < (pDoc->width)-1; x++)
-		{
-			/*if (y == 0 || y == (pDoc->height) - 1 || x == 0 || x == (pDoc->width) - 1)
-				pDoc->resultImg[y][x] = pDoc->tmpImg[y][x];*/
-			//else
-			//{
-				tmp[0] = pDoc->tmpImg[y - 1][x - 1];
-				tmp[1] = pDoc->tmpImg[y - 1][x];
-				tmp[2] = pDoc->tmpImg[y - 1][x + 1];
-				tmp[3] = pDoc->tmpImg[y][x - 1];
-				tmp[4] = pDoc->tmpImg[y][x];
-				tmp[5] = pDoc->tmpImg[y][x + 1];
-				tmp[6] = pDoc->tmpImg[y + 1][x - 1];
-				tmp[7] = pDoc->tmpImg[y + 1][x];
-				tmp[8] = pDoc->tmpImg[y + 1][x + 1];
-				BubbleSort(tmp, 9);
-				pDoc->resultImg[y][x] = tmp[num];
-			//}
-		}
+		if (dilation == 1 && erosion == 0)//팽창
+			dilation_erosion(num);
+		else if (dilation == 0 && erosion == 1)//침식
+			dilation_erosion(num);
 
-		if (pDoc->channel == 1)
-		{
+		//if (pDoc->channel == 1)
+		//{
 			for (int y = 0; y<pDoc->height; y++) for (int x = 0; x<pDoc->width; x++)
 				pDC->SetPixel(x, y, RGB(pDoc->resultImg[y][x], pDoc->resultImg[y][x], pDoc->resultImg[y][x]));
-		}
-	}
-
-		
+		//}
+	}	
 	/*	else if (pDoc->channel == 3)
 		{
 			for (int y = 0; y<pDoc->height; y++) for (int x = 0; x<pDoc->width; x++)
 				pDC->SetPixel(x, y, RGB(pDoc->resultImg[y][x * 3], pDoc->resultImg[y][x * 3 + 1], pDoc->resultImg[y][x * 3 + 2]));
-		}*/
-	
-	/*CString strData;
-	strData.Format(_T("X:%03d, Y:%03d"), m_ptLeft.x, m_ptLeft.y);
-	pDC->TextOutA(0,0,strData);*/
-	/*m_ImgSample.AlphaBlend(pDC->m_hDC, 0, 0, 50);
-	CRgn Rgn;
-	Rgn.CreateEllipticRgn(m_rectVisible.left, m_rectVisible.top, m_rectVisible.right, m_rectVisible.bottom);
-	pDC->SelectClipRgn(&Rgn);
-	m_ImgSample.BitBlt(pDC->m_hDC, 0, 0);*/
+		}*/	
 }
 
 void CMFCApplication1View::OnInitialUpdate()
@@ -268,25 +252,14 @@ int CMFCApplication1View::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void CMFCApplication1View::OnIdok()
-{
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-
-}
-
-void CMFCApplication1View::OnBnClickedCheck1()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-}
-
 void CMFCApplication1View::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	switch (nChar)
 	{
 	case VK_LEFT:  break;
-	case VK_DOWN: erosion = 1; dilation = 0; viewmode = 1; break;
-	case VK_UP: erosion = 0; dilation = 1; viewmode = 1; break;
+	case VK_DOWN: erosion = 1; dilation = 0; viewmode = 1; num = 1; break;
+	case VK_UP: erosion = 0; dilation = 1; viewmode = 1; num = 8; break;
 	case VK_RIGHT:  break;
 	}
 	Invalidate();

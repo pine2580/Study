@@ -20,6 +20,7 @@ public:
 	int viewmode;
 	int dilation;
 	int erosion;
+	int num;
 // 재정의입니다.
 public:
 	virtual void OnDraw(CDC* pDC);  // 이 뷰를 그리기 위해 재정의되었습니다.
@@ -49,12 +50,8 @@ protected:
 public:
 //	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void Onmatch();
-	
-	
+	afx_msg void dilation_erosion(int);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	
-	afx_msg void OnIdok();
-	afx_msg void OnBnClickedCheck1();
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
